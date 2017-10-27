@@ -14,8 +14,10 @@
                         <a href="/login.html">登录</a>
                         <a href="/register.html">注册</a>
                         <strong>|</strong>
-                        <!--<a href="/content/contact.html"><i class="iconfont icon-phone"></i>联系我们</a>
-                                       <a href="/cart.html"><i class="iconfont icon-cart"></i>购物车(<span id="shoppingCartCount"><script type="text/javascript" src="/tools/submit_ajax.ashx?action=view_cart_count"></script></span>)</a>-->
+                        <router-link to="/site/car">
+                        <i class="iconfont icon-cart"></i>
+                         购物车(<span id="shoppingCartCount">{{this.$store.getters.getCount}}</span>)
+                    </router-link>
                     </div>
                 </div>
             </div>
@@ -80,34 +82,55 @@
 </template>
 
 <script>
-  
+    import {
+        vm,
+        key
+    } from '../../kits/vm.js';
+    export default {
+        data() {
+            return {
+                buyCount: 0,
+            }
+        },
 
-   export default{
+        mounted() {
 
-    mounted(){
-        // 实现菜单的翻滚
-            $(function(){
-              $("#menu2 li a").wrapInner( '<span class="out"></span>' );
-              $("#menu2 li a").each(function() {
-                $( '<span class="over">' +  $(this).text() + '</span>' ).appendTo( this );
-              });
+            // vm.$on(key, (buyCount) => {
+            //     this.buyCount += buyCount;
+            // });
+            // 实现菜单的翻滚
+            $(function() {
+                $("#menu2 li a").wrapInner('<span class="out"></span>');
+                $("#menu2 li a").each(function() {
+                    $('<span class="over">' + $(this).text() + '</span>').appendTo(this);
+                });
 
-              $("#menu2 li a").hover(function() {
-                $(".out",	this).stop().animate({'top':	'48px'},	300); // move down - hide
-                $(".over",	this).stop().animate({'top':	'0px'},		300); // move down - show
+                $("#menu2 li a").hover(function() {
+                    $(".out", this).stop().animate({
+                        'top': '48px'
+                    }, 300); // move down - hide
+                    $(".over", this).stop().animate({
+                        'top': '0px'
+                    }, 300); // move down - show
 
-              }, function() {
-                $(".out",	this).stop().animate({'top':	'0px'},		300); // move up - show
-                $(".over",	this).stop().animate({'top':	'-48px'},	300); // move up - hide
-              });
+                }, function() {
+                    $(".out", this).stop().animate({
+                        'top': '0px'
+                    }, 300); // move up - show
+                    $(".over", this).stop().animate({
+                        'top': '-48px'
+                    }, 300); // move up - hide
+                });
 
             });
+        },
+
+
     }
-  }
 </script>
 
 
 
 <style scoped>
-  @import url('../../../statics/elementuiCss/index.css')
+    @import url('../../../statics/elementuiCss/index.css')
 </style>

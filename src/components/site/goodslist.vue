@@ -6,7 +6,9 @@
             <div class="location">
                 <span>当前位置：</span>
                 <a href="/index.html">首页</a> &gt;
-                <a href="/goods.html">购物商城</a>
+               <router-link to="/site/goodslist">
+                                    购物商城
+                                </router-link>
             </div>
         </div>
 
@@ -141,56 +143,52 @@
 </template>
 
 <script>
+    // es6的export default{ 写法等同于 module.exports={
+    export default {
+        // es6的写法 data() 等同于es5的 data:function()
+        data() {
+            return {
+                // 首页顶部分页导航，轮播图，置顶数据
+                list: {},
 
+                clist: [],
+            }
+        },
+        created() {
+            this.getlist();
+            this.getClist();
+        },
+        methods: {
 
-// es6的export default{ 写法等同于 module.exports={
-export default{
-    // es6的写法 data() 等同于es5的 data:function()
-    data(){
-        return{
-            // 首页顶部分页导航，轮播图，置顶数据
-            list:{},
+            // 获取首页顶部分页导航，轮播图，置顶数据
+            getlist() {
+                this.$http.get('/site/goods/gettopdata/goods').then(res => {
+                    this.list = res.data.message;
+                    //  console.log(res.data.message.sliderlist);
+                })
+            },
 
-            clist:[],
-        }
-    },
-    created(){
-        this.getlist();
-        this.getClist();
-    },
-    methods:{
-
-      // 获取首页顶部分页导航，轮播图，置顶数据
-         getlist(){
-             this.$http.get('/site/goods/gettopdata/goods').then(res=>{
-                 this.list=res.data.message;
-                //  console.log(res.data.message.sliderlist);
-             })
-         },
-
-        //  获取 商品首页按照分类分组获取数据
-        getClist(){
-            this.$http.get('/site/goods/getgoodsgroup').then(res=>{
-                 this.clist=res.data.message;
-                //  console.log(res.data.message);
-             }) 
+            //  获取 商品首页按照分类分组获取数据
+            getClist() {
+                this.$http.get('/site/goods/getgoodsgroup').then(res => {
+                    this.clist = res.data.message;
+                    //  console.log(res.data.message);
+                })
+            }
         }
     }
-}
-
 </script>
 
 <style>
- .el-carousel__container{
-     height:343px;
- }
+    .el-carousel__container {
+        height: 343px;
+    }
+    
     .el-carousel__item h3 {
-    color: #475669;
-    font-size: 18px;
-    opacity: 0.75;
-    line-height: 30px;
-    margin: 0;
-  }
-  
-  
+        color: #475669;
+        font-size: 18px;
+        opacity: 0.75;
+        line-height: 30px;
+        margin: 0;
+    }
 </style>

@@ -24,6 +24,9 @@ import goodslist from './components/site/goodslist.vue';
 
 // 导入商品详情组件
 import goodsinfo from './components/site/goodsinfo.vue';
+import car from './components/site/car.vue';
+import login from './components/site/login.vue';
+import shoping from './components/site/shoping.vue';
 
 
 var router = new vueRouter({
@@ -35,7 +38,10 @@ var router = new vueRouter({
             component: layout,
             children: [
                 { name: 'goodslist', path: 'goodslist', component: goodslist }, //商品列表的路由规则
-                { name: 'goodsinfo', path: 'goodsinfo/:goodsid', component: goodsinfo }
+                { name: 'goodsinfo', path: 'goodsinfo/:goodsid', component: goodsinfo },
+                { name: 'car', path: 'car', component: car },
+                { name: 'login', path: 'login', component: login },
+                { name: 'shoping', path: 'shoping', component: shoping }
             ]
         }
     ]
@@ -91,6 +97,54 @@ Vue.filter('datefmt', (input, fmtstring) => {
         return y + '-' + m + '-' + d + h + ':' + mi + ':' + s;
     }
 
+});
+
+// 定义vuex 四个变量实现购物车的改变 
+//   1.数据对象 =data();
+var state = {
+    buyCount: 0,
+}
+
+//   2.定义action ==motheds
+var actions = {
+        changeBuycount({ commit }, paramsBuyCount) {
+            commit('changeBuycount', paramsBuyCount);
+        }
+    }
+    //   3.定义mutations
+var mutations = {
+    changeBuycount(state, paramsBuyCount) {
+        state.buyCount += paramsBuyCount;
+    }
+}
+
+//  如果不需要对state中的buyCount进行逻辑封装则留空
+import { getItem } from './kits/locaStoragekit';
+var getters = {
+    getCount(state) {
+        if (state.buyCount > 0) {
+            return state.buyCount;
+        }
+
+        var goodsObj = getItem();
+        var count = 0;
+        for (var key in goodsObj) {
+            count++
+        }
+        state.buyCount = count;
+        return state.buyCount;
+    }
+}
+
+import vuex from 'vuex';
+
+Vue.use(vuex);
+// 4，实例化一个store对象 进行管理
+var store = new vuex.Store({
+    state,
+    actions,
+    mutations,
+    getters
 })
 
 
@@ -101,6 +155,7 @@ new Vue({
     // render:function(create){create(App);}
 
     router,
+    store,
 
     // es6的写法
     render: create => create(App)

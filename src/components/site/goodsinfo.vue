@@ -14,7 +14,7 @@
     </div>
 
     <!-- 商品详情 -->
-    <div class="section">
+    <div class="section" v-if="ginfo.goodsinfo">
         <div class="wrapper clearfix">
             <div class="wrap-box">
                 <!--页面左边-->
@@ -82,12 +82,8 @@
                                     <dt>购买数量</dt>
                                     <dd>
                                         <div class="stock-box">
-                                            <input id="commodityChannelId" type="hidden" value="2">
-                                            <input id="commodityArticleId" type="hidden" value="98">
-                                            <input id="commodityGoodsId" type="hidden" value="0">
-                                            <input id="commoditySelectNum" type="text" maxlength="9" value="1" maxvalue="10" onkeydown="return checkNumber(event);">
-                                            <a class="add" onclick="addCartNum(1);">+</a>
-                                            <a class="remove" onclick="addCartNum(-1);">-</a>
+                                            <el-input-number v-model="buyCount"  :min="1">
+                                            </el-input-number>
                                         </div>
                                         <span class="stock-txt">库存<em id="commodityStockNum">10</em>件</span>
                                     </dd>
@@ -95,8 +91,8 @@
                                 <dl>
                                     <dd>
                                         <div class="btn-buy" id="buyButton">
-                                            <button class="buy" onclick="cartAdd(this,'/',1,'/shopping.html');">立即购买</button>
-                                            <button class="add" onclick="cartAdd(this,'/',0,'/cart.html');">加入购物车</button>
+                                            <button class="buy">立即购买</button>
+                                            <button class="add" @click="addcar">加入购物车</button>
                                         </div>
                                     </dd>
                                 </dl>
@@ -200,7 +196,7 @@
                                             <router-link v-bind="{to:'/site/goodsinfo/'+item.id}">
                                                   {{item.title}}
                                             </router-link>
-                                            <span>{{item.add_time | datefmt('YY-MM-DD')}}</span>
+                                            <span>{{item.add_time | datefmt('YY-MM-DD')}}</span>tv
                                         </div>
                             </li> 
 
@@ -219,6 +215,17 @@
 
 <script>
     import Affix from 'iview/src/components/affix';
+
+    // 导入vm.js
+    import {
+        vm,
+        key
+    } from '../../kits/vm.js';
+
+    // 导入localStoragekit.js
+    import {
+        setItem
+    } from '../../kits/locaStoragekit.js';
 
 
 
@@ -240,12 +247,13 @@
         // es6的写法 data() 等同于es5的 data:function()
         data() {
             return {
+                buyCount: 1,
                 ginfo: {},
                 iscontent: true,
                 comonlist: [], //评论数据
                 txtContent: '',
                 pageIndex: 1,
-                pageSize: 1,
+                pageSize: 10,
                 totalcount: 0,
             }
         },
@@ -261,6 +269,23 @@
             }
         },
         methods: {
+
+            // 加入购物车
+            addcar() {
+                // 通过vm.导入触发事件
+                // vm.$emit(key, this.buyCount)
+
+
+
+                // 通过vuex进行触发
+                this.$store.dispatch('changeBuycount', this.buyCount);
+
+                // 设置id和数量到localStorage
+                setItem({
+                    gid: this.$route.params.goodsid,
+                    bcount: this.buyCount
+                })
+            },
 
             pageIndexChange(val) {
                 this.pageIndex = val;
