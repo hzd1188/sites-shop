@@ -100,7 +100,9 @@
                 <div class="cart-foot clearfix">
                     <div class="right-box">
                         <button class="button" onclick="javascript:location.href='/index.html';">继续购物</button>
-                        <button class="submit" onclick="formSubmit(this, '/', '/shopping.html');">立即结算</button>
+                        
+                         <button class="submit" @click="toshopping">立即结算</button>
+                        
                     </div>
                 </div>
                 <!--购物车底部-->
@@ -119,7 +121,8 @@
 
     import {
         getItem,
-        remoteItem
+        remoteItem,
+        updageItem
     } from '../../kits/locaStoragekit.js';
     export default {
         components: {
@@ -165,6 +168,26 @@
             }
         },
         methods: {
+            toshopping() {
+                //  1.0 获取当前购物车表格中选中的商品id
+                var ids = '';
+                var idsArr = [];
+                this.values.forEach((item, index) => {
+                    if (item) {
+                        idsArr.push(this.list[index].id);
+                    }
+                })
+
+                ids = idsArr.join(',');
+                // 2.0 将这些商品id以逗号分隔的形式传递到/site/shopping/:ids
+                // params:将ids的值传递到路由规则shopping的ids参数中
+                this.$router.push({
+                    name: 'shoping',
+                    params: {
+                        ids: ids
+                    }
+                });
+            },
             // 删除数据
             deldata(goodsid) {
                 // 1.0 删除this.list中这个商品数据
@@ -180,6 +203,7 @@
 
                 // 3.0 删除localStorage中的这个商品数据
                 remoteItem(goodsid);
+                this.$store.dispatch('changeBuycount', this.buyCount);
             },
             update(obj) {
                 console.log('-->update');
@@ -189,6 +213,11 @@
                         item.buycount = obj.count;
                     }
                 });
+
+                updageItem({
+                    gid: obj.gid,
+                    count: obj.count
+                })
 
                 // 由于通过js代码修改的计算属性selletmentAmount方法中依赖的list中的某个属性的值是不会触发计算属性方法的重新执行的
                 this.list.push('');

@@ -41,11 +41,33 @@ var router = new vueRouter({
                 { name: 'goodsinfo', path: 'goodsinfo/:goodsid', component: goodsinfo },
                 { name: 'car', path: 'car', component: car },
                 { name: 'login', path: 'login', component: login },
-                { name: 'shoping', path: 'shoping', component: shoping }
+                { name: 'shoping', path: 'shoping/:ids', component: shoping, meta: { islogin: true } }
             ]
         }
     ]
-})
+});
+
+
+router.beforeEach((to, from, next) => {
+    // 在localStorage中记录当前浏览器访问的的最后一个路由规则的名称
+    if (to.name != 'login') {
+        localStorage.setItem('cname', to.name);
+    }
+
+    if (to.meta.islogin) {
+        axios.get('/site/account/islogin').then(res => {
+            if (res.data.code == 'logined') {
+                next();
+            } else {
+                router.push({ name: 'login' });
+            }
+        })
+    } else {
+        // 表示进入其他页面不需要进行登录验证，直接访问即可
+        next();
+    }
+
+});
 
 
 

@@ -11,7 +11,9 @@
                         <a target="_blank" href="#"></a>
                     </div>
                     <div id="menu" class="right-box">
-                        <a href="/login.html">登录</a>
+                        <router-link to="/site/login">
+                               登录
+                            </router-link>
                         <a href="/register.html">注册</a>
                         <strong>|</strong>
                         <router-link to="/site/car">

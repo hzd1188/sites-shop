@@ -91,7 +91,11 @@
                                 <dl>
                                     <dd>
                                         <div class="btn-buy" id="buyButton">
-                                            <button class="buy">立即购买</button>
+                                            <router-link to="/site/shoping">
+                                                <button class="buy"> 
+                                                    立即支付
+                                                </button>
+                                             </router-link>
                                             <button class="add" @click="addcar">加入购物车</button>
                                         </div>
                                     </dd>
